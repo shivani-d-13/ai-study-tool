@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Study Tool
 
-## Getting Started
+Upload your notes and get AI-generated flashcards and quizzes instantly.
 
-First, run the development server:
+🔗 Live: https://ai-study-tool-gules.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## What it does
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Upload study notes as text
+- AI generates 8 flashcards and 4 quiz questions automatically
+- Study flashcards with spaced repetition (rate each card: Again / Hard / Good / Easy)
+- Take a quiz and see your score
+- All data saved per user account
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend** — Next.js 14, Tailwind CSS
+- **Backend** — Next.js API routes
+- **Database** — Supabase (PostgreSQL)
+- **AI** — Groq API (Llama 3.3 70B)
+- **Auth** — Supabase Auth
+- **Deployment** — Vercel
 
-## Learn More
+## Running locally
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Clone the repo
+2. Run `npm install`
+3. Create a `.env.local` file with:
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    GROQ_API_KEY=your_groq_api_key
+4. Run `npm run dev`
+5. Open `localhost:3000`
