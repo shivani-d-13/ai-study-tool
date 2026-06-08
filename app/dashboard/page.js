@@ -51,7 +51,19 @@ export default function Dashboard() {
     <main className="min-h-screen bg-gray-950 text-white p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-        <p className="text-gray-400 mb-8">Welcome back. Here's your progress.</p>
+        <div className="flex items-center justify-between mb-8">
+          <p className="text-gray-400">Welcome back. Here's your progress.</p>
+          <button
+            onClick={async () => {
+              const supabase = createClient()
+              await supabase.auth.signOut()
+              router.push("/login")
+            }}
+            className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition"
+          >
+            Log out
+          </button>
+        </div>
 
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="bg-gray-900 rounded-xl p-6">
