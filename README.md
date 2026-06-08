@@ -26,8 +26,10 @@ Upload your notes and get AI-generated flashcards and quizzes instantly.
 1. Clone the repo
 2. Run `npm install`
 3. Create a `.env.local` file with:
-    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-    GROQ_API_KEY=your_groq_api_key
+``` env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+GROQ_API_KEY=your_groq_api_key
+```
 4. Run `npm run dev`
 5. Open `localhost:3000`
