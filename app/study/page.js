@@ -1,10 +1,11 @@
 "use client"
 
+import { Suspense } from "react"
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase"
 import { useRouter, useSearchParams } from "next/navigation"
 
-export default function Study() {
+function StudyContent() {
   const [flashcards, setFlashcards] = useState([])
   const [current, setCurrent] = useState(0)
   const [flipped, setFlipped] = useState(false)
@@ -17,7 +18,6 @@ export default function Study() {
   useEffect(() => {
     async function fetchFlashcards() {
       const supabase = createClient()
-
       const { data, error } = await supabase
         .from("flashcards")
         .select("*")
@@ -119,5 +119,17 @@ export default function Study() {
         )}
       </div>
     </main>
+  )
+}
+
+export default function Study() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+        <p className="text-gray-400">Loading...</p>
+      </main>
+    }>
+      <StudyContent />
+    </Suspense>
   )
 }

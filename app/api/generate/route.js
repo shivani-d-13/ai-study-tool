@@ -1,10 +1,11 @@
 import Groq from "groq-sdk"
+import { createClient } from "@/lib/supabase"
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export async function POST(request) {
   try {
-    const { text, title } = await request.json()
+    const { text, title, docId } = await request.json()
 
     if (!text) {
       return Response.json({ error: "No text provided" }, { status: 400 })
@@ -41,6 +42,17 @@ ${text}`
 
     const raw = completion.choices[0].message.content
     const parsed = JSON.parse(raw)
+
+    if (docId) {
+      const supabase = createClient()
+      const questions = parsed.quiz.map(q => ({
+        document_id: docId,
+        question: q.question,
+        options: q.options,
+        answer: q.answer
+      }))
+      await supabase.from("quiz_questions").insert(questions)
+    }
 
     return Response.json(parsed)
 

@@ -29,20 +29,6 @@ export default function Upload() {
         return
       }
 
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, title })
-      })
-
-      const data = await response.json()
-
-      if (data.error) {
-        setError(data.error)
-        setLoading(false)
-        return
-      }
-
       const { data: doc, error: docError } = await supabase
         .from("documents")
         .insert({ title, raw_text: text, user_id: user.id })
@@ -51,6 +37,20 @@ export default function Upload() {
 
       if (docError) {
         setError(docError.message)
+        setLoading(false)
+        return
+      }
+
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, title, docId: doc.id })
+      })
+
+      const data = await response.json()
+
+      if (data.error) {
+        setError(data.error)
         setLoading(false)
         return
       }

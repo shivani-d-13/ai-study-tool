@@ -81,8 +81,7 @@ export default function Dashboard() {
             {documents.map(doc => (
               <div
                 key={doc.id}
-                className="bg-gray-900 rounded-xl p-6 flex items-center justify-between hover:bg-gray-800 transition cursor-pointer"
-                onClick={() => router.push(`/study?doc=${doc.id}`)}
+                className="bg-gray-900 rounded-xl p-6 flex items-center justify-between"
               >
                 <div>
                   <p className="font-medium text-white">{doc.title}</p>
@@ -90,7 +89,20 @@ export default function Dashboard() {
                     {new Date(doc.created_at).toLocaleDateString()}
                   </p>
                 </div>
-                <span className="text-blue-400 text-sm">Study →</span>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => router.push(`/study?doc=${doc.id}`)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition"
+                  >
+                    Study
+                  </button>
+                  <button
+                    onClick={() => router.push(`/quiz?doc=${doc.id}`)}
+                    className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm transition"
+                  >
+                    Quiz
+                  </button>
+                </div>
               </div>
             ))}
           </div>

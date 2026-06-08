@@ -1,41 +1,65 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense } from "react"
+import { useState, useEffect } from "react"
+import { createClient } from "@/lib/supabase"
+import { useRouter, useSearchParams } from "next/navigation"
 
-const mockQuestions = [
-  {
-    question: "What is the powerhouse of the cell?",
-    options: ["Nucleus", "Mitochondria", "Ribosome", "Golgi apparatus"],
-    answer: 1
-  },
-  {
-    question: "What does DNA stand for?",
-    options: ["Deoxyribonucleic acid", "Diribonucleic acid", "Deoxyribonitric acid", "None of the above"],
-    answer: 0
-  }
-]
-
-export default function Quiz() {
+function QuizContent() {
+  const [questions, setQuestions] = useState([])
   const [current, setCurrent] = useState(0)
   const [selected, setSelected] = useState(null)
   const [score, setScore] = useState(0)
   const [finished, setFinished] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const docId = searchParams.get("doc")
+
+  useEffect(() => {
+    async function fetchQuestions() {
+      const supabase = createClient()
+      const { data, error } = await supabase
+        .from("quiz_questions")
+        .select("*")
+        .eq("document_id", docId)
+
+      if (error || !data || data.length === 0) {
+        router.push("/dashboard")
+        return
+      }
+
+      setQuestions(data)
+      setLoading(false)
+    }
+
+    if (docId) fetchQuestions()
+    else router.push("/dashboard")
+  }, [docId])
 
   function handleAnswer(index) {
     if (selected !== null) return
     setSelected(index)
-    if (index === mockQuestions[current].answer) {
+    if (index === questions[current].answer) {
       setScore(score + 1)
     }
   }
 
   function handleNext() {
-    if (current + 1 >= mockQuestions.length) {
+    if (current + 1 >= questions.length) {
       setFinished(true)
     } else {
       setCurrent(current + 1)
       setSelected(null)
     }
+  }
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+        <p className="text-gray-400">Loading quiz...</p>
+      </main>
+    )
   }
 
   if (finished) {
@@ -46,29 +70,27 @@ export default function Quiz() {
           <h1 className="text-3xl font-bold mb-2">Quiz complete</h1>
           <p className="text-gray-400 mb-6">You scored</p>
           <p className="text-5xl font-bold text-blue-400 mb-8">
-            {score} / {mockQuestions.length}
+            {score} / {questions.length}
           </p>
           <button
-            onClick={() => { setCurrent(0); setSelected(null); setScore(0); setFinished(false) }}
+            onClick={() => router.push("/dashboard")}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition"
           >
-            Try again
+            Back to dashboard
           </button>
         </div>
       </main>
     )
   }
 
-  const q = mockQuestions[current]
+  const q = questions[current]
 
   return (
     <main className="min-h-screen bg-gray-950 text-white p-8">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Quiz</h1>
-          <p className="text-gray-400 text-sm">
-            {current + 1} of {mockQuestions.length}
-          </p>
+          <p className="text-gray-400 text-sm">{current + 1} of {questions.length}</p>
         </div>
 
         <div className="bg-gray-900 rounded-xl p-8 mb-6">
@@ -101,10 +123,22 @@ export default function Quiz() {
             onClick={handleNext}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition"
           >
-            {current + 1 >= mockQuestions.length ? "See results" : "Next question"}
+            {current + 1 >= questions.length ? "See results" : "Next question"}
           </button>
         )}
       </div>
     </main>
+  )
+}
+
+export default function Quiz() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+        <p className="text-gray-400">Loading...</p>
+      </main>
+    }>
+      <QuizContent />
+    </Suspense>
   )
 }
