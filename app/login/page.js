@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
-import Navbar from "@/components/Navbar"
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -33,7 +32,6 @@ export default function Login() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-950">
-      <Navbar />
       <div className="bg-gray-900 p-8 rounded-xl w-full max-w-md">
         <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
         <p className="text-gray-400 mb-6">Log in to your account</p>

@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
-import Navbar from "@/components/Navbar"
 
 export default function Register() {
   const [name, setName] = useState("")
@@ -37,7 +36,6 @@ export default function Register() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-950">
-      <Navbar />
       <div className="bg-gray-900 p-8 rounded-xl w-full max-w-md">
         <h1 className="text-2xl font-bold text-white mb-2">Create account</h1>
         <p className="text-gray-400 mb-6">Start studying smarter</p>
