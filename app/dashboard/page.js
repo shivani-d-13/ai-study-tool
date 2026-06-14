@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar"
 export default function Dashboard() {
   const [documents, setDocuments] = useState([])
   const [flashcardCount, setFlashcardCount] = useState(0)
+  const [dueCount, setDueCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
@@ -27,13 +28,23 @@ export default function Dashboard() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
 
-      const { count } = await supabase
+      const docIds = docs?.map(d => d.id) || []
+
+      const { count: totalCount } = await supabase
         .from("flashcards")
         .select("*", { count: "exact", head: true })
-        .in("document_id", docs?.map(d => d.id) || [])
+        .in("document_id", docIds)
+
+      const today = new Date().toISOString()
+      const { count: due } = await supabase
+        .from("flashcards")
+        .select("*", { count: "exact", head: true })
+        .in("document_id", docIds)
+        .lte("next_review_at", today)
 
       setDocuments(docs || [])
-      setFlashcardCount(count || 0)
+      setFlashcardCount(totalCount || 0)
+      setDueCount(due || 0)
       setLoading(false)
     }
 
@@ -59,7 +70,7 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
           <p className="text-gray-400 mb-8">Welcome back. Here's your progress.</p>
 
-          <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-gray-900 rounded-xl p-6">
               <p className="text-gray-400 text-sm mb-1">Total documents</p>
               <p className="text-3xl font-bold">{documents.length}</p>
@@ -68,6 +79,19 @@ export default function Dashboard() {
               <p className="text-gray-400 text-sm mb-1">Total flashcards</p>
               <p className="text-3xl font-bold">{flashcardCount}</p>
             </div>
+          </div>
+
+          <div
+            onClick={() => dueCount > 0 && router.push("/review")}
+            className={`rounded-xl p-6 mb-8 flex items-center justify-between ${dueCount > 0 ? "bg-blue-900 cursor-pointer hover:bg-blue-800 transition" : "bg-gray-900 opacity-50 cursor-not-allowed"}`}
+          >
+            <div>
+              <p className="text-white font-medium">Today's Revision</p>
+              <p className="text-blue-300 text-sm mt-1">
+                {dueCount > 0 ? `${dueCount} cards due today` : "Nothing due today"}
+              </p>
+            </div>
+            {dueCount > 0 && <span className="text-blue-300 text-xl">→</span>}
           </div>
 
           <div className="flex items-center justify-between mb-4">

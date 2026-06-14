@@ -22,6 +22,9 @@ export default function Navbar() {
         <Link href="/dashboard" className="text-gray-400 hover:text-white text-sm transition">
           Dashboard
         </Link>
+        <Link href="/review" className="text-gray-400 hover:text-white text-sm transition">
+        Revision
+        </Link>
         <Link href="/upload" className="text-gray-400 hover:text-white text-sm transition">
           Upload
         </Link>
