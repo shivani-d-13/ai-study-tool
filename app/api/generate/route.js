@@ -41,7 +41,8 @@ ${text}`
     })
 
     const raw = completion.choices[0].message.content
-    const parsed = JSON.parse(raw)
+    const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim()
+    const parsed = JSON.parse(cleaned)
 
     if (docId) {
       const supabase = createClient()
