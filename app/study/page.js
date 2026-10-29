@@ -41,21 +41,22 @@ function StudyContent() {
     else router.push("/dashboard")
   }, [docId])
 
-  async function handleRating(rating) {
-    await fetch("/api/review", {
+  function handleRating(rating) {
+    const flashcardId = flashcards[current].id
+
+    fetch("/api/review", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        flashcardId: flashcards[current].id,
-        rating,
-        userId
-      })
+      body: JSON.stringify({ flashcardId, rating }), // no userId
+      keepalive: true,
     })
+      .then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`) })
+      .catch((err) => console.error("Review failed:", err))
 
     if (current + 1 >= flashcards.length) {
       setFinished(true)
     } else {
-      setCurrent(current + 1)
+      setCurrent((c) => c + 1)
       setFlipped(false)
     }
   }
